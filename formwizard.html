@@ -47,8 +47,8 @@
                     <a class="brand" href="#">Wizard test</a>
                     <ul class="nav">
                         <li><a href="/">Home</a></li>
-                        <li><a href="formwizard.html">Formwizard</a></li>
-                        <li class="active"><a href="smartwizard.html">Smartwizard</a></li>
+                        <li class="active"><a href="formwizard.html">Formwizard</a></li>
+                        <li><a href="smartwizard.html">Smartwizard</a></li>
                     </ul>
                 </div>
             </div>
@@ -58,39 +58,41 @@
 
             <!-- Main hero unit for a primary marketing message or call to action -->
             <div class="row">
-                <div id="wizard" class="swMain">
-                    <div id="login-info" class="hero-unit">
+                <form id ="wizard" action="#">
+                    <div id="login-info" class="hero-unit step">
                         <h1>Please provide you login info</h1>
-                        <form action="#">
                             <label>Login</label><input type="text"/>
                             <label>Password</label><input type="password"/>
                             <label>Password again</label><input type="password"/>
-                        </form>
                     </div>
-                    <div id="user-data" class="hero-unit">
+                    <div id="user-data" class="hero-unit step">
                         <h1>We want to know more about you</h1>
                         <label for="firstname">First name</label>
                         <input type="text" id="firstname" /><br />
                         <label for="lastname">Last name</label>
                         <input type="text" id="lastname" />
                     </div>
-                    <div id="bio" class="step hero-unit">
+                    <div id="bio" class="step hero-unit step">
                         <h1>Your life is important too</h1>
                         <textarea id="bio" name="bio" rows="10" cols="30"></textarea>
                     </div>
-                    <div id="thanks" class="hero-unit">
+                    <div id="thanks" class="hero-unit step">
                         <h1>Thank you for yout submitting</h1>
                         <p>Thank you, we are happy to know about you, have a nice day =)</p>
                     </div>
                     <div class="row">
-                        <ul class="nav nav-pills pull-right">
+                        <div id="demoNavigation" class="pull-left span3" >
+                            <button class="btn btn-large navigation_button" type="reset">Back</button>
+                            <button class="btn btn-large navigation_button" type="submit">Next</button>
+    				    </div>
+                        <ul id="step-indicator" class="nav nav-pills pull-right">
   		        	    	<li class="active"><a href="#login-info">Logins</a></li>
   		        	    	<li><a href="#user-data">User data</a></li>
   		        	    	<li><a href="#bio">Bio</a></li>
   		        	    	<li><a href="#thanks">Thank you!</a></li>
   		        	    </ul>
                     </div>
-                </div>
+                </form>
             </div>
 
             <footer>
@@ -99,35 +101,30 @@
 
         </div> <!-- /container -->
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-        <script type="text/javascript" src="js/vendor/jquery.smartWizard-2.0.min.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery.form.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery.validate.js"></script>
+        <script type="text/javascript" src="js/vendor/bbq.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery-ui-1.8.5.custom.min.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery.form.wizard.js"></script>
 
         <script src="js/vendor/bootstrap.min.js"></script>
 
         <script type="text/javascript">
-            $(document).ready(function() {
-                $(document).ready(function(){
-                    $('#wizard').smartWizard({
-                        enableAllSteps: true,
-                        enableFinishButton: false,
-                        transitionEffect: 'none',
-                        onShowStep: showStepCallback,
-                        onLeaveStep: leaveStepCallback
-                    });
+            $(document).ready(function(){
+                $('#wizard').formwizard({});
 
-                    function leaveStepCallback(obj) {
-                        obj.parent().removeClass("active");
-                        return true;
-                    }
-
-                    function showStepCallback(obj) {
-                        obj.parent().addClass("active");
-                    }
-
-                    $(".actionBar").addClass("pull-left");
-                    $(".actionBar a").addClass("btn");
+                $("#wizard").bind("step_shown", function(event, data) {
+                    $("#step-indicator a[href='#" + data.previousStep + "']").parent().removeClass("active");
+                    $("#step-indicator a[href='#" + data.currentStep + "']").parent().addClass("active");
                 });
+
+                $("#step-indicator a").bind("click", function(event) {
+                    event.preventDefault();
+                    step_id = $(event.currentTarget).attr("href").replace(/#/g, '');
+                    $("#wizard").formwizard("show", step_id);
+                });
+
             });
         </script>
 
